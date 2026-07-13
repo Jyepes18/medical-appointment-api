@@ -5,6 +5,7 @@ obj/
 # Rider
 .idea/
 *.sln.iml
+.idea/.idea.MedicalAppointment.Api/.idea/encodings.xml
 
 # Visual Studio
 .vs/
