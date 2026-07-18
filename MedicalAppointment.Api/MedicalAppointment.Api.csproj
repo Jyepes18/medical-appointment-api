@@ -8,10 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AWSSDK.S3" Version="4.0.101.3" />
         <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
         <PackageReference Include="Dapper" Version="2.1.79" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8"/>
         <PackageReference Include="Npgsql" Version="10.0.3" />
+        <PackageReference Include="QuestPDF" Version="2026.7.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
     </ItemGroup>
 
@@ -23,7 +25,6 @@
 
     <ItemGroup>
       <Folder Include="Enums\" />
-      <Folder Include="Helpers\" />
       <Folder Include="Validations\" />
     </ItemGroup>
 

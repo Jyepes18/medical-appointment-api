@@ -106,4 +106,43 @@ public class UserService : IUserService
             (appointments, total),
             200);
     }
+    
+    public async Task<Results<(ICollection<Report>, int), int>> GetReportsByUser(Guid userId, int page, int pageSize)
+    {
+        const string sql = @"
+            SELECT
+                r.id,
+                r.appointment_id AS AppointmentId,
+                r.url_report AS UrlReport,
+                r.created_at AS CreatedAt
+            FROM report r
+            INNER JOIN appointment a
+                ON a.id = r.appointment_id
+            WHERE a.user_id = @UserId
+            ORDER BY r.created_at DESC
+            LIMIT @PageSize
+            OFFSET @Offset;
+
+            SELECT COUNT(*)
+            FROM report r
+            INNER JOIN appointment a
+                ON a.id = r.appointment_id
+            WHERE a.user_id = @UserId;
+        ";
+
+        using var multi = await _connectionService.connection.QueryMultipleAsync(sql, new
+        {
+            UserId = userId,
+            PageSize = pageSize,
+            Offset = (page - 1) * pageSize
+        });
+
+        var reports = (await multi.ReadAsync<Report>()).ToList();
+        var total = await multi.ReadFirstAsync<int>();
+
+        return Results<(ICollection<Report>, int), int>.Success((reports, total), 200);
+    }
+    
+    
+    
 }

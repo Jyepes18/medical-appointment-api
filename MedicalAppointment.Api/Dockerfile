@@ -1,23 +1,18 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-ARG BUILD_CONFIGURATION=Release
+﻿FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["MedicalAppointment.Api/MedicalAppointment.Api.csproj", "MedicalAppointment.Api/"]
-RUN dotnet restore "MedicalAppointment.Api/MedicalAppointment.Api.csproj"
+
 COPY . .
-WORKDIR "/src/MedicalAppointment.Api"
-RUN dotnet build "./MedicalAppointment.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./MedicalAppointment.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+WORKDIR /src/MedicalAppointment
+RUN dotnet restore
+RUN dotnet publish -c Release -o /app/publish
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MedicalAppointment.Api.dll"]
+
+COPY --from=build /app/publish .
+
+ENV ASPNETCORE_URLS=http://0.0.0.0:8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "TodoApp.dll"]
