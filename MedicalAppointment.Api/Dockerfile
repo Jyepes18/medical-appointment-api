@@ -3,7 +3,7 @@ WORKDIR /src
 
 COPY . .
 
-WORKDIR /src/MedicalAppointment
+WORKDIR /src/MedicalAppointment.Api
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app/publish
 
