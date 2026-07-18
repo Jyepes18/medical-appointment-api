@@ -9,10 +9,12 @@ namespace MedicalAppointment.Api.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IPdfService _pdfService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IPdfService pdfService)
     {
         _userService = userService;
+        _pdfService = pdfService;
     }
 
     [HttpPost]
@@ -37,5 +39,24 @@ public class UserController : ControllerBase
     {
         var result = await _userService.GetAppointmentsByUser(userId);
         return Ok(result);
+    }
+    
+    [HttpPost]
+    [Route("get-repostr/{userId:guid}")]
+    public async Task<IActionResult> GetReportsByUser([FromRoute] Guid userId, [FromQuery] int page, [FromQuery] int pageZise)
+    {
+        var result = await _userService.GetReportsByUser(userId, page, pageZise);
+        return Ok(new {Data = result.Value.Item1, Total = result.Value.Item2, result.Error, result.IsSuccess, result.Status});
+    }
+    
+    
+    [HttpGet]
+    [Route("report/{reportId::guid}")]
+    public async Task<IActionResult> DownloadReport(Guid reportId)
+    {
+        var result = await _pdfService.DownloadReport(reportId);
+        if (!result.IsSuccess)
+            return StatusCode(result.Status, result.Error);
+        return File( result.Value.File, "application/pdf", result.Value.FileName);
     }
 }
