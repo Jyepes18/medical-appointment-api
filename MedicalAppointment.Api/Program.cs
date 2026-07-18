@@ -19,6 +19,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IConnectionService, ConnectionService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IAdminValidation, AdminValidation>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserValidate, UserValidate>();
 
 var app = builder.Build();
 
